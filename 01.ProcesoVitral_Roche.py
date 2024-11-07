@@ -23,11 +23,9 @@ vUsarCUMMedicamentoGrupo = 1
 #AP.ProcesarOutliers(vCliente, vCarpetaCliente, vUsarCUMMedicamentoGrupo, 'MediaMovil')
 
 ## Arima JR
-AP.AlgoritmoArima(vCliente, vCarpetaCliente, vUsarCUMMedicamentoGrupo, vFechaInicioProyectar, FC.fCalcularMesesAProyectar(vFechaInicioProyectar), 'Outliers')
+#AP.AlgoritmoArima(vCliente, vCarpetaCliente, vUsarCUMMedicamentoGrupo, vFechaInicioProyectar, FC.fCalcularMesesAProyectar(vFechaInicioProyectar), 'Outliers')
 
-quit()
-
-AP.LlevarDatosAMipres(vCliente, vCarpetaCliente, 'ARIMA', vDAASMipres)
+AP.LlevarDatosAMipres(vCliente, vCarpetaCliente, 'ARIMA', vDAASMipres, vUsarCUMMedicamentoGrupo)
 
 # Obtener estadisticas de tiempo y finalizar script.
 FC.fCalcularTiempoEjecucionScript(vInicio)

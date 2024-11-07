@@ -147,7 +147,7 @@ class AlgoritmosProyeccion:
 
         df_SismedBaseMediaMovil.to_csv(f'{CARPETA_PARAMETROS_CLIENTE}/Sismed_BaseMediaMovil_{CLIENTE}.csv', sep=';', index=None)
 
-    def LlevarDatosAMipres(CLIENTE, CARPETA_PARAMETROS_CLIENTE, ALGORITMO_PREDICCION, DAAS_MIPRES):
+    def LlevarDatosAMipres(CLIENTE, CARPETA_PARAMETROS_CLIENTE, ALGORITMO_PREDICCION, DAAS_MIPRES, USAR_GRUPO_MEDICAMENTO):
 
         ################################################################################################################################################################################
         # Leer los datos de las predicciones y pasarlos a data en tablas con dimensiones PeriodoNum, NombrePrincipioActivo y Cantidad ##################################################
@@ -183,6 +183,15 @@ class AlgoritmosProyeccion:
 
             df_datosBase = pandas.concat([df_datosBase, Tmp2_df_datosBase])
             del Tmp2_df_datosBase
+
+        ## Si el proceso de predicción se hizo usando los medicamentos, hay que eliminarlos porque mipres solo reporta moleculas.
+        if USAR_GRUPO_MEDICAMENTO == 1:
+            df_PrincipiosMedicamentos = df_datosBase["NombrePrincipioActivo"].str.split("_", expand=True)
+            df_datosBase.drop(columns=["NombrePrincipioActivo"], inplace=True)
+            df_datosBase["NombrePrincipioActivo"] = df_PrincipiosMedicamentos[0]
+            del df_PrincipiosMedicamentos
+
+            df_datosBase = df_datosBase.groupby(by=['PeriodoNum', 'NombrePrincipioActivo'], as_index=False).agg(Cantidad = ("Cantidad", "sum"))
 
         # Guardar solo cuando se necesiten validar
         #df_datosBase.to_csv(f'{CARPETA_PARAMETROS_CLIENTE}/df_datosBase.csv', sep=';', index=None)
@@ -487,7 +496,7 @@ class AlgoritmosProyeccion:
 
             # Almacenar la tabla real+prediccion
             df_Organizado.to_csv(f'{CARPETA_PARAMETROS_CLIENTE}/Real_Prediccion_ARIMA_{CLIENTE}.csv', sep=';', index=True)
-            df_PDQ.to_csv(f'{CARPETA_PARAMETROS_CLIENTE}/df_PDQ_ARIMA.csv', sep=';', index=True)
+            #df_PDQ.to_csv(f'{CARPETA_PARAMETROS_CLIENTE}/df_PDQ_ARIMA.csv', sep=';', index=True)
 
         elif USAR_GRUPOMED == 1:
             
